@@ -1,0 +1,17 @@
+ext.versions = [
+        lombok  : '1.18.22'
+]
+
+ext.deps = [
+        lombok: [
+                "org.projectlombok:lombok:$versions.lombok"
+        ],
+
+        spring: [
+                "org.springframework.boot:spring-boot-starter-web"
+        ],
+
+        spring_test: [
+                "org.springframework.boot:spring-boot-starter-test"
+        ],
+]
