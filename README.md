@@ -16,7 +16,11 @@ NB! There is not functionality to publish library into mavenCentral yet, thus _i
 3. Run `./gradlew publishToMavenLocal`.
 4. In your application project add implementation from mavenLocal.
 
-Gradle example `implementation 'ee.alekal:bowlingscore:{current_version}'` (Make sure you can access repos from mavenLocal `.m2` folder)
+Gradle example `implementation 'ee.alekal:bowlingscore:{current_version}'`. 
+
+(Make sure you can access repos from mavenLocal `.m2` folder)
+
+The current version could be founded in `build.gradle` file
 
 #### This plugin could be used in two different ways
 

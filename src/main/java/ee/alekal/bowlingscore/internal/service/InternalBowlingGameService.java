@@ -29,7 +29,7 @@ public class InternalBowlingGameService implements BowlingGameService {
         ValidationService
                 .withNickNameAndFrameId(nickname, frameId)
                 .playerIsRegisteredInInternalStorage()
-                .frameExistsInStorage()
+                .frameExistsInInternalStorage()
                 .isValidScore(score)
                 .canMakeRoll(RollQueueType.FRAME_FIRST_ROLL);
 
@@ -50,7 +50,7 @@ public class InternalBowlingGameService implements BowlingGameService {
         ValidationService
                 .withNickNameAndFrameId(nickname, frameId)
                 .playerIsRegisteredInInternalStorage()
-                .frameExistsInStorage()
+                .frameExistsInInternalStorage()
                 .isValidScore(score)
                 .canMakeRoll(RollQueueType.FRAME_SECOND_ROLL);
 

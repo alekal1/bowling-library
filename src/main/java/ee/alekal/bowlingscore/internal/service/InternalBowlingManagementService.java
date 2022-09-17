@@ -89,7 +89,7 @@ public class InternalBowlingManagementService implements BowlingManagementServic
         ValidationService
                 .withNickNameAndFrameId(nickname, frameId)
                 .playerIsRegisteredInInternalStorage()
-                .frameExistsInStorage();
+                .frameExistsInInternalStorage();
 
         val player = InternalBowlingStorage.getPlayerByNickname(nickname);
 

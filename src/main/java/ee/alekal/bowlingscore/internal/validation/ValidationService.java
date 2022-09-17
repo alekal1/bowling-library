@@ -53,7 +53,7 @@ public class ValidationService {
             return this;
         }
 
-        public Validator frameExistsInStorage() {
+        public Validator frameExistsInInternalStorage() {
             checkConstraint(frameId < 0,
                     new FrameDoesNotExistException(frameId));
 
@@ -68,9 +68,9 @@ public class ValidationService {
                 return this;
             }
 
-            Integer integerScore = null;
+            int integerScore;
             try {
-                integerScore = Integer.valueOf(score);
+                integerScore = Integer.parseInt(score);
             } catch (NumberFormatException e) {
                 throw new InvalidScoreValueException(score);
             }

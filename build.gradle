@@ -16,7 +16,7 @@ dependencyManagement {
 }
 
 group = 'ee.alekal'
-version = '2.1.0'
+version = '2.1.1'
 sourceCompatibility = '11'
 
 configurations {
