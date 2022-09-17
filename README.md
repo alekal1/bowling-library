@@ -23,13 +23,12 @@ Gradle example `implementation 'ee.alekal:bowlingscore:{current_version}'` (Make
 [Option 1] In your project add `@EnableInternalBowlingClient` under your configuration.
 This will use implementation from `src/main/java/ee/alekal/bowlingscore/internal` package.
 
-Internal implementation is quite straightforward, but it is recommended to check how things work (for instance validation)
+Internal implementation is quite straightforward, but it is recommended to check how things work (for instance validation, api exception handling etc)
 
 Furthermore, _there is no database connectivity_ in internal implementation yet.
 
-[Option 2] You could create your own logic by implementing `BowlingService` class.
- In that case, make sure `BowlingController` is still imported to your application configuration.
- Spring example: `@Import(BowlingController.class)`
+[Option 2] In your project add `@EnableBowlingControllers` under your configuration.
+ You should create your own logic by implementing `BowlingManagementService` and `BowlingGameService` classes.
 
 ### Reference Documentation
 For further reference, please consider the following sections:

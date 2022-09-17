@@ -2,7 +2,7 @@ package ee.alekal.bowlingscore.internal.service;
 
 import ee.alekal.bowlingscore.dto.Player;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
-import ee.alekal.bowlingscore.service.BowlingService;
+import ee.alekal.bowlingscore.service.BowlingManagementService;
 import ee.alekal.bowlingscore.internal.validation.ValidationService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class InternalBowlingService implements BowlingService {
+public class InternalBowlingManagementService implements BowlingManagementService {
 
     @Override
     public ResponseEntity<Player> addPlayer(String nickname) {
@@ -43,7 +43,6 @@ public class InternalBowlingService implements BowlingService {
     @Override
     public ResponseEntity<?> getAllPlayers() {
         log.info("getAllPlayers");
-
         return ResponseEntity.ok(InternalBowlingStorage.getPlayers());
     }
 
@@ -61,7 +60,7 @@ public class InternalBowlingService implements BowlingService {
     }
 
     @Override
-    public ResponseEntity<?> getPlayerFrameScore(String nickname, Integer frameId) {
+    public ResponseEntity<Integer> getPlayerFrameScore(String nickname, Integer frameId) {
         log.info("getPlayersFrameScore, nickname {}, frameId {}", nickname, frameId);
 
         ValidationService
@@ -71,7 +70,7 @@ public class InternalBowlingService implements BowlingService {
 
         val player = InternalBowlingStorage.getPlayer(nickname);
 
-        val frameScore = player.getFrames().get(frameId).getFrameScore();
+        val frameScore = player.getFrameTotalScore(frameId);
 
         return ResponseEntity.ok(frameScore);
     }

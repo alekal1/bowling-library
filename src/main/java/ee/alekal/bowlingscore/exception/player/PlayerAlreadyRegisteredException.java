@@ -1,8 +1,10 @@
 package ee.alekal.bowlingscore.exception.player;
 
-import static ee.alekal.bowlingscore.util.Constants.ERR_PLAYER_ALREADY_REGISTERED;
+import ee.alekal.bowlingscore.exception.BowlingValidationException;
 
-public class PlayerAlreadyRegisteredException extends IllegalArgumentException {
+import static ee.alekal.bowlingscore.constants.Constants.ERR_PLAYER_ALREADY_REGISTERED;
+
+public class PlayerAlreadyRegisteredException extends BowlingValidationException {
 
     public PlayerAlreadyRegisteredException(String nickname) {
         super(String.format(ERR_PLAYER_ALREADY_REGISTERED, nickname));

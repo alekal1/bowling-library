@@ -16,7 +16,7 @@ dependencyManagement {
 }
 
 group = 'ee.alekal'
-version = '0.0.1'
+version = '2.0.0'
 sourceCompatibility = '11'
 
 configurations {
@@ -47,4 +47,8 @@ publishing {
 
 test {
     useJUnitPlatform()
+    outputs.upToDateWhen {false}
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED"
+    }
 }

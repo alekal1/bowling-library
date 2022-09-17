@@ -1,16 +1,51 @@
 package ee.alekal.bowlingscore.dto;
 
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+import static ee.alekal.bowlingscore.constants.Constants.BOARD_SIZE;
+
+@Getter
 public class Player {
 
+
     private final String nickname;
+    private final List<Frame> frames = new ArrayList<>();
 
-    private List<Frame> frames = new ArrayList<>();
-    private Integer totalScore;
+    public Player(String nickname) {
+        this.nickname = nickname;
+        initFrames();
+    }
 
+    private void initFrames() {
+        for (int i = 0; i < BOARD_SIZE; i ++) {
+            this.frames.add(new Frame());
+        }
+    }
+
+    public Integer getFrameFirstRollScore(Integer frameId) {
+        return frames.get(frameId).getFirstRollScore();
+    }
+
+    public void setFrameFirstRollScore(Integer frameId, Integer score) {
+        frames.get(frameId).setFirstRollScore(score);
+    }
+
+    public Integer getFrameSecondRollScore(Integer frameId) {
+        return frames.get(frameId).getSecondRollScore();
+    }
+
+    public void setFrameSecondRollScore(Integer frameId, Integer score) {
+        frames.get(frameId).setSecondRollScore(score);
+    }
+
+    public Integer getFrameTotalScore(Integer frameId) {
+        return frames.get(frameId).getFrameTotalScore();
+    }
+
+    public Integer getTotalScore() {
+        return frames.stream().mapToInt(Frame::getFrameTotalScore).sum();
+    }
 }

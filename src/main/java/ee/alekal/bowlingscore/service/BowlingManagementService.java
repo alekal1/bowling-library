@@ -2,7 +2,7 @@ package ee.alekal.bowlingscore.service;
 
 import org.springframework.http.ResponseEntity;
 
-public interface BowlingService {
+public interface BowlingManagementService {
 
     ResponseEntity<?> addPlayer(String nickname);
     ResponseEntity<?> getPlayer(String nickname);

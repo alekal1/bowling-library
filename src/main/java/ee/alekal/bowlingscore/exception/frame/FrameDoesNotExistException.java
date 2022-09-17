@@ -1,8 +1,10 @@
 package ee.alekal.bowlingscore.exception.frame;
 
-import static ee.alekal.bowlingscore.util.Constants.ERR_FRAME_DOES_NOT_EXISTS;
+import ee.alekal.bowlingscore.exception.BowlingValidationException;
 
-public class FrameDoesNotExistException extends IllegalArgumentException {
+import static ee.alekal.bowlingscore.constants.Constants.ERR_FRAME_DOES_NOT_EXISTS;
+
+public class FrameDoesNotExistException extends BowlingValidationException {
 
     public FrameDoesNotExistException(Integer frameId) {
         super(String.format(ERR_FRAME_DOES_NOT_EXISTS, frameId));
