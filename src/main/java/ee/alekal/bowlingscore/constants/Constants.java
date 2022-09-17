@@ -14,7 +14,8 @@ public class Constants {
             = "Frame with id %s already has result in %s roll!";
     public static final String ERR_NOT_VALID_SCORE = "Score value %s is not valid!";
     public static final String ERR_PLAYER_SHOULD_MAKE_FIRST_ROLL = "Player %s should make first roll in frame %s";
+    public static final String ERR_INVALID_CURRENT_FRAME = "Cannot perform roll with id %s, current frame is %s";
 
     // TODO: Should be configurable
-    public static final Integer BOARD_SIZE = 10;
+    public static final Integer BOWLING_BOARD_SIZE = 10;
 }

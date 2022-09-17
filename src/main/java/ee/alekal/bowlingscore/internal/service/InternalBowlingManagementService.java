@@ -6,16 +6,19 @@ import ee.alekal.bowlingscore.service.BowlingManagementService;
 import ee.alekal.bowlingscore.internal.validation.ValidationService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
 public class InternalBowlingManagementService implements BowlingManagementService {
 
     @Override
-    public ResponseEntity<Player> addPlayer(String nickname) {
-        log.info("addPlayer, nickname {}", nickname);
+    public ResponseEntity<Player> addPlayerByNickname(String nickname) {
+        log.info("addPlayerByNickname, nickname {}", nickname);
 
         ValidationService
                 .withNickName(nickname)
@@ -28,20 +31,20 @@ public class InternalBowlingManagementService implements BowlingManagementServic
     }
 
     @Override
-    public ResponseEntity<?> getPlayer(String nickname) {
-        log.info("getPlayer, nickname {}", nickname);
+    public ResponseEntity<?> getPlayerByNickname(String nickname) {
+        log.info("getPlayerByNickname, nickname {}", nickname);
 
         ValidationService
                 .withNickName(nickname)
                 .playerIsRegisteredInInternalStorage();
 
-        val player = InternalBowlingStorage.getPlayer(nickname);
+        val player = InternalBowlingStorage.getPlayerByNickname(nickname);
 
         return ResponseEntity.ok(player);
     }
 
     @Override
-    public ResponseEntity<?> getAllPlayers() {
+    public ResponseEntity<List<Player>> getAllPlayers() {
         log.info("getAllPlayers");
         return ResponseEntity.ok(InternalBowlingStorage.getPlayers());
     }
@@ -54,9 +57,29 @@ public class InternalBowlingManagementService implements BowlingManagementServic
                 .withNickName(nickname)
                 .playerIsRegisteredInInternalStorage();
 
-        val player = InternalBowlingStorage.getPlayer(nickname);
+        val player = InternalBowlingStorage.getPlayerByNickname(nickname);
 
         return ResponseEntity.ok(player.getTotalScore());
+    }
+
+    @Override
+    public ResponseEntity<?> removePlayerByNickname(String nickname) {
+        log.info("removePlayerByNickname, nickname {}", nickname);
+
+        ValidationService
+                .withNickName(nickname)
+                .playerIsRegisteredInInternalStorage();
+
+        InternalBowlingStorage.removePlayerByNickname(nickname);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> removeAllPlayers() {
+        InternalBowlingStorage.removeAllPlayers();
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
@@ -68,7 +91,7 @@ public class InternalBowlingManagementService implements BowlingManagementServic
                 .playerIsRegisteredInInternalStorage()
                 .frameExistsInStorage();
 
-        val player = InternalBowlingStorage.getPlayer(nickname);
+        val player = InternalBowlingStorage.getPlayerByNickname(nickname);
 
         val frameScore = player.getFrameTotalScore(frameId);
 

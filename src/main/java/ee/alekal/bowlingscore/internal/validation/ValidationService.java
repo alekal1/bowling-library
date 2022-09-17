@@ -1,16 +1,18 @@
 package ee.alekal.bowlingscore.internal.validation;
 
-import ee.alekal.bowlingscore.dto.type.FrameRollQueueType;
+import ee.alekal.bowlingscore.dto.Player;
+import ee.alekal.bowlingscore.dto.type.RollQueueType;
 import ee.alekal.bowlingscore.exception.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
+import ee.alekal.bowlingscore.exception.frame.InvalidCurrentFrameException;
 import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
 import ee.alekal.bowlingscore.exception.player.PlayerAlreadyRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerNotRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerShouldMakeFirstRollException;
+import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import lombok.experimental.UtilityClass;
-import lombok.val;
 
 import java.util.Set;
 
@@ -25,33 +27,33 @@ public class ValidationService {
         return new Validator(nickname, frameId);
     }
 
-    // TODO: A lot of InternalBowlingStorage.getPlayer(nickname), maybe use that only in constructor?
     public static class Validator {
+        Player player;
+
         String nickname;
         Integer frameId;
 
         private Validator(String nickname, Integer frameId) {
+            this.player = InternalBowlingStorage.getPlayerByNickname(nickname);
             this.nickname = nickname;
             this.frameId = frameId;
         }
 
         public Validator canRegisterToInternalStorage() {
-            checkConstraint(InternalBowlingStorage.getPlayer(nickname) != null,
+            checkConstraint(player != null,
                     new PlayerAlreadyRegisteredException(nickname));
 
             return this;
         }
 
         public Validator playerIsRegisteredInInternalStorage() {
-            checkConstraint(InternalBowlingStorage.getPlayer(nickname) == null,
+            checkConstraint(player == null,
                     new PlayerNotRegisteredException(nickname));
 
             return this;
         }
 
         public Validator frameExistsInStorage() {
-            val player = InternalBowlingStorage.getPlayer(nickname);
-
             checkConstraint(frameId < 0,
                     new FrameDoesNotExistException(frameId));
 
@@ -81,15 +83,18 @@ public class ValidationService {
             return this;
         }
 
-        public Validator canMakeRoll(FrameRollQueueType rollQueueType) {
-            val player = InternalBowlingStorage.getPlayer(nickname);
+        public Validator canMakeRoll(RollQueueType rollQueueType) {
+            checkConstraint(
+                    !frameId.equals(GameBehaviour.getInstance().getCurrentFrame()),
+                    new InvalidCurrentFrameException(frameId));
+
             switch (rollQueueType) {
-                case FIRST_ROLL:
+                case FRAME_FIRST_ROLL:
                     checkConstraint(
                             player.getFrameFirstRollScore(frameId) != null,
                             new FrameRollResultAlreadyReportedException(frameId, rollQueueType));
                     break;
-                case SECOND_ROLL:
+                case FRAME_SECOND_ROLL:
                     checkConstraint(
                             player.getFrameSecondRollScore(frameId) != null,
                             new FrameRollResultAlreadyReportedException(frameId, rollQueueType));
@@ -103,7 +108,6 @@ public class ValidationService {
             }
             return this;
         }
-
 
         private void checkConstraint(boolean constraint, BowlingValidationException e) throws BowlingValidationException {
             if (constraint) {

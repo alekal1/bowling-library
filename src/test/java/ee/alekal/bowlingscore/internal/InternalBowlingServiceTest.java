@@ -3,17 +3,16 @@ package ee.alekal.bowlingscore.internal;
 import ee.alekal.bowlingscore.dto.BowlingRoll;
 import ee.alekal.bowlingscore.dto.Player;
 import ee.alekal.bowlingscore.exception.BowlingValidationException;
+import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import ee.alekal.bowlingscore.internal.service.InternalBowlingGameService;
 import ee.alekal.bowlingscore.internal.service.InternalBowlingManagementService;
 import ee.alekal.bowlingscore.service.BowlingGameService;
 import ee.alekal.bowlingscore.service.BowlingManagementService;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.RepetitionInfo;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,17 +20,20 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 
-import static ee.alekal.bowlingscore.constants.Constants.BOARD_SIZE;
+import java.util.List;
+
+import static ee.alekal.bowlingscore.constants.Constants.BOWLING_BOARD_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ContextConfiguration(classes = InternalBowlingServiceTest.Config.class)
 public class InternalBowlingServiceTest {
 
-    protected static final String TEST_PLAYER_NICK_NAME = "test-%s:internal";
+    protected static final String TEST_PLAYER_RAW_NICK_NAME = "test-%s:internal";
 
     @Autowired
     BowlingManagementService bowlingManagementService;
@@ -39,8 +41,13 @@ public class InternalBowlingServiceTest {
     @Autowired
     BowlingGameService bowlingGameService;
 
+    @BeforeEach
+    public void init() {
+        InternalBowlingStorage.removeAllPlayers();
+        GameBehaviour.clearInstance();
+    }
+
     @Test
-    @Order(1) // This method should be executed first
     public void verifyAllPlayersReturnedSuccessfully() {
         addPlayer("verifyAllPlayersReturnedSuccessfully-1");
         addPlayer("verifyAllPlayersReturnedSuccessfully-2");
@@ -52,7 +59,7 @@ public class InternalBowlingServiceTest {
     @RepeatedTest(3)
     public void verifyCanAddPlayers(RepetitionInfo repetitionInfo) {
         var player = addPlayer(repetitionInfo.getCurrentRepetition());
-        assertEquals(BOARD_SIZE, player.getFrames().size());
+        assertEquals(BOWLING_BOARD_SIZE, player.getFrames().size());
     }
 
     @Test
@@ -70,8 +77,8 @@ public class InternalBowlingServiceTest {
 
         var player = addPlayer(nickNamePrefix);
 
-        var response = bowlingManagementService.getPlayer(
-                String.format(TEST_PLAYER_NICK_NAME, nickNamePrefix));
+        var response = bowlingManagementService.getPlayerByNickname(
+                player.getNickname());
 
         assertTrue(response.hasBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -82,17 +89,19 @@ public class InternalBowlingServiceTest {
     @Test
     public void verifyPlayerTotalFrameScoreReturnedSuccessfully() {
         var player = addPlayer("verifyPlayerTotalFrameScoreReturnedSuccessfully");
-        var firstFrameId = 0;
 
         bowlingGameService.makeFirstRoll(
                 BowlingRoll.builder()
                         .playerNickname(player.getNickname())
-                        .frameId(firstFrameId)
+                        .frameId(GameBehaviour.getInstance().getCurrentFrame())
                         .score("1")
                         .build());
 
         var firstRollResponse =
-                bowlingManagementService.getPlayerFrameScore(player.getNickname(), firstFrameId);
+                bowlingManagementService.getPlayerFrameScore(
+                        player.getNickname(),
+                        GameBehaviour.getInstance().getCurrentFrame());
+
         assertEquals(HttpStatus.OK, firstRollResponse.getStatusCode());
         assertTrue(firstRollResponse.hasBody());
 
@@ -101,12 +110,14 @@ public class InternalBowlingServiceTest {
         bowlingGameService.makeSecondRoll(
                 BowlingRoll.builder()
                         .playerNickname(player.getNickname())
-                        .frameId(firstFrameId)
+                        .frameId(GameBehaviour.getInstance().getCurrentFrame())
                         .score("1")
                         .build());
 
+        // NB! Current frame is updated after second shot, do not use getCurrentFrame()
         var secondRollResponse =
-                bowlingManagementService.getPlayerFrameScore(player.getNickname(), firstFrameId);
+                bowlingManagementService.getPlayerFrameScore(
+                        player.getNickname(), 0);
         assertEquals(HttpStatus.OK, secondRollResponse.getStatusCode());
         assertTrue(secondRollResponse.hasBody());
 
@@ -121,26 +132,27 @@ public class InternalBowlingServiceTest {
                 bowlingGameService.makeSecondRoll(
                         BowlingRoll.builder()
                                 .playerNickname(player.getNickname())
-                                .frameId(0)
+                                .frameId(GameBehaviour.getInstance().getCurrentFrame())
                                 .score("1")
                                 .build()));
     }
 
     @Test
     public void verifyThrowsValidationExceptionFrameRollResultAlreadyReported() {
-        var player = addPlayer("verifyThrowsValidationExceptionFrameRollResultAlreadyReported");
-        var firstFrameId = 0;
+        var player = addPlayer("verifyThrowsValidationExceptionFrameRollResultAlreadyReported");;
 
         var firstBowlingRoll = BowlingRoll.builder()
                 .playerNickname(player.getNickname())
-                .frameId(firstFrameId)
+                .frameId(GameBehaviour.getInstance().getCurrentFrame())
                 .score("1")
                 .build();
 
         bowlingGameService.makeFirstRoll(firstBowlingRoll);
 
         var firstRollResponse =
-                bowlingManagementService.getPlayerFrameScore(player.getNickname(), firstFrameId);
+                bowlingManagementService.getPlayerFrameScore(
+                        player.getNickname(),
+                        GameBehaviour.getInstance().getCurrentFrame());
         assertEquals(HttpStatus.OK, firstRollResponse.getStatusCode());
         assertTrue(firstRollResponse.hasBody());
 
@@ -166,10 +178,10 @@ public class InternalBowlingServiceTest {
         assertThrowsBowlingValidationException(() ->
                 bowlingGameService.makeFirstRoll(
                         BowlingRoll.builder()
-                        .playerNickname(player.getNickname())
-                        .frameId(11)
-                        .score("1")
-                        .build()));
+                                .playerNickname(player.getNickname())
+                                .frameId(11)
+                                .score("1")
+                                .build()));
     }
 
     @Test
@@ -180,7 +192,7 @@ public class InternalBowlingServiceTest {
                 bowlingGameService.makeFirstRoll(
                         BowlingRoll.builder()
                                 .playerNickname(player.getNickname())
-                                .frameId(0)
+                                .frameId(GameBehaviour.getInstance().getCurrentFrame())
                                 .score("abc")
                                 .build()
                 ));
@@ -188,24 +200,79 @@ public class InternalBowlingServiceTest {
         assertThrowsBowlingValidationException(() ->
                 bowlingGameService.makeFirstRoll(
                         BowlingRoll.builder()
-                        .playerNickname(player.getNickname())
-                        .frameId(0)
-                        .score("-1")
-                        .build()));
+                                .playerNickname(player.getNickname())
+                                .frameId(GameBehaviour.getInstance().getCurrentFrame())
+                                .score("-1")
+                                .build()));
 
         assertThrowsBowlingValidationException(() ->
                 bowlingGameService.makeFirstRoll(
                         BowlingRoll.builder()
-                        .playerNickname(player.getNickname())
-                        .frameId(0)
-                        .score("22")
-                        .build()));
+                                .playerNickname(player.getNickname())
+                                .frameId(GameBehaviour.getInstance().getCurrentFrame())
+                                .score("22")
+                                .build()));
+    }
+
+    @Test
+    public void verifyCanRemovePlayer() {
+        var player = addPlayer("verifyCanRemovePlayer");
+
+        assertEquals(1, InternalBowlingStorage.getPlayers().size());
+        assertNotNull(InternalBowlingStorage.getPlayerByNickname(player.getNickname()));
+
+        bowlingManagementService.removePlayerByNickname(player.getNickname());
+
+        assertEquals(0, InternalBowlingStorage.getPlayers().size());
+        assertNull(InternalBowlingStorage.getPlayerByNickname(player.getNickname()));
+    }
+
+    @Test
+    public void verifyCannotDeleteUnregisteredPlayer() {
+        assertThrowsBowlingValidationException(() -> {
+            bowlingManagementService.removePlayerByNickname("verifyCannotDeleteUnregisteredPlayer");
+        });
+    }
+
+
+    @Test
+    public void verifyCurrentFrameIsUpdatedAfterAllPlayersRoll() {
+        assertEquals(0, GameBehaviour.getInstance().getCurrentFrame());
+
+        var bowlingPlayers = List.of(
+                addPlayer("verifyCurrentFrameIsUpdatedAfterAllPlayersRoll-1"),
+                addPlayer("verifyCurrentFrameIsUpdatedAfterAllPlayersRoll-2"),
+                addPlayer("verifyCurrentFrameIsUpdatedAfterAllPlayersRoll-3")
+        );
+
+        for (Player player : bowlingPlayers) {
+            bowlingGameService.makeFirstRoll(
+                    BowlingRoll.builder()
+                            .playerNickname(player.getNickname())
+                            .frameId(GameBehaviour.getInstance().getCurrentFrame())
+                            .score("3")
+                            .build());
+
+            bowlingGameService.makeSecondRoll(
+                    BowlingRoll.builder()
+                            .playerNickname(player.getNickname())
+                            .frameId(GameBehaviour.getInstance().getCurrentFrame())
+                            .score("3")
+                            .build());
+        }
+
+        assertEquals(1, GameBehaviour.getInstance().getCurrentFrame());
+    }
+
+    @Test
+    public void verifyThrowsValidationExceptionInvalidCurrentFrame() {
+
     }
 
 
     private Player addPlayer(Object nickNamePrefix) {
-        var response = bowlingManagementService.addPlayer(
-                String.format(TEST_PLAYER_NICK_NAME, nickNamePrefix));
+        var response = bowlingManagementService.addPlayerByNickname(
+                String.format(TEST_PLAYER_RAW_NICK_NAME, nickNamePrefix));
 
         assertTrue(response.hasBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());

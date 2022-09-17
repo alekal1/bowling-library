@@ -1,7 +1,8 @@
 package ee.alekal.bowlingscore.internal.service;
 
 import ee.alekal.bowlingscore.dto.BowlingRoll;
-import ee.alekal.bowlingscore.dto.type.FrameRollQueueType;
+import ee.alekal.bowlingscore.dto.type.RollQueueType;
+import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import ee.alekal.bowlingscore.internal.validation.ValidationService;
 import ee.alekal.bowlingscore.service.BowlingGameService;
@@ -30,9 +31,9 @@ public class InternalBowlingGameService implements BowlingGameService {
                 .playerIsRegisteredInInternalStorage()
                 .frameExistsInStorage()
                 .isValidScore(score)
-                .canMakeRoll(FrameRollQueueType.FIRST_ROLL);
+                .canMakeRoll(RollQueueType.FRAME_FIRST_ROLL);
 
-        val player = InternalBowlingStorage.getPlayer(nickname);
+        val player = InternalBowlingStorage.getPlayerByNickname(nickname);
         player.setFrameFirstRollScore(frameId, convertStringScore(score));
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -51,10 +52,13 @@ public class InternalBowlingGameService implements BowlingGameService {
                 .playerIsRegisteredInInternalStorage()
                 .frameExistsInStorage()
                 .isValidScore(score)
-                .canMakeRoll(FrameRollQueueType.SECOND_ROLL);
+                .canMakeRoll(RollQueueType.FRAME_SECOND_ROLL);
 
-        val player = InternalBowlingStorage.getPlayer(nickname);
+        val player = InternalBowlingStorage.getPlayerByNickname(nickname);
         player.setFrameSecondRollScore(frameId, convertStringScore(score));
+
+        GameBehaviour.getInstance().addPlayerToFrameQueue(player);
+        GameBehaviour.getInstance().updateCurrentFrameIfAllPlayersRolledOnCurrent();
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

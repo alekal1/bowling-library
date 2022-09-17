@@ -2,6 +2,7 @@ package ee.alekal.bowlingscore.internal.api;
 
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
+import ee.alekal.bowlingscore.exception.frame.InvalidCurrentFrameException;
 import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
 import ee.alekal.bowlingscore.exception.player.PlayerAlreadyRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerNotRegisteredException;
@@ -29,7 +30,8 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler({
             FrameDoesNotExistException.class,
-            FrameRollResultAlreadyReportedException.class})
+            FrameRollResultAlreadyReportedException.class,
+            InvalidCurrentFrameException.class})
     public ResponseEntity<ErrorResponse> handleFrameExceptions(Exception e) {
         return new ResponseEntity<>(new ErrorResponse(ERR_FRAME_CLASSIFIER, e.getMessage()), HttpStatus.BAD_REQUEST);
     }

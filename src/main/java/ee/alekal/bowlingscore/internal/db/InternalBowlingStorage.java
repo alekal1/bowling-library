@@ -24,10 +24,18 @@ public class InternalBowlingStorage {
         players.add(player);
     }
 
-    public static Player getPlayer(String nickname) {
+    public static Player getPlayerByNickname(String nickname) {
         return players.stream()
                 .filter(player -> player.getNickname().equals(nickname))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public static void removePlayerByNickname(String nickname) {
+        players.removeIf(player -> player.getNickname().equals(nickname));
+    }
+
+    public static void removeAllPlayers() {
+        players.clear();
     }
 }
