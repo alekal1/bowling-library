@@ -24,6 +24,8 @@ The current version could be founded in `build.gradle` file
 
 #### This plugin could be used in two different ways
 
+Since this library is using Spring boot as REST API client, make sure to add spring boot dependencies into you main project.
+
 [Option 1] In your project add `@EnableInternalBowlingClient` under your configuration.
 This will use implementation from `src/main/java/ee/alekal/bowlingscore/internal` package.
 
@@ -33,6 +35,9 @@ Furthermore, _there is no database connectivity_ in internal implementation yet.
 
 [Option 2] In your project add `@EnableBowlingControllers` under your configuration.
  You should create your own logic by implementing `BowlingManagementService` and `BowlingGameService` classes.
+
+### API docs
+Internal api documentation is located under `spec/` folder
 
 ### Reference Documentation
 For further reference, please consider the following sections:
