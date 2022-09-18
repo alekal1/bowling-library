@@ -65,10 +65,6 @@ public class ValidationService {
         }
 
         public Validator isValidScore(String score) {
-            if (Set.of("/", "X").contains(score)) {
-                return this;
-            }
-
             int integerScore;
             try {
                 integerScore = Integer.parseInt(score);

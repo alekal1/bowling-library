@@ -19,7 +19,7 @@ dependencyManagement {
 }
 
 group = 'ee.alekal'
-version = '2.1.4'
+version = '2.1.5'
 sourceCompatibility = '11'
 
 configurations {
@@ -58,7 +58,7 @@ test {
 }
 
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
+    dependsOn test
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {

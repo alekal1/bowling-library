@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import static ee.alekal.bowlingscore.internal.utils.InternalUtils.convertStringScore;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -72,5 +70,9 @@ public class InternalBowlingGameService implements BowlingGameService {
     private void addPlayerToFrameUpdateCurrentIfNeeded(Player player) {
         gameBehaviour.addPlayerToFrameQueue(player);
         gameBehaviour.updateCurrentFrameIfAllPlayersRolledOnCurrent();
+    }
+
+    public static Integer convertStringScore(String score) {
+        return Integer.valueOf(score);
     }
 }

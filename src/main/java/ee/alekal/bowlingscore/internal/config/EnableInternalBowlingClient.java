@@ -2,6 +2,7 @@ package ee.alekal.bowlingscore.internal.config;
 
 import ee.alekal.bowlingscore.controller.BowlingGameController;
 import ee.alekal.bowlingscore.controller.BowlingManagementController;
+import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.handler.ApiExceptionHandler;
 import ee.alekal.bowlingscore.internal.service.InternalBowlingGameService;
 import ee.alekal.bowlingscore.internal.service.InternalBowlingManagementService;
@@ -18,6 +19,7 @@ import java.lang.annotation.Target;
         BowlingGameController.class,
         InternalBowlingManagementService.class,
         InternalBowlingGameService.class,
+        GameBehaviour.class,
         ApiExceptionHandler.class})
 public @interface EnableInternalBowlingClient {
 }

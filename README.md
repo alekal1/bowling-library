@@ -6,10 +6,13 @@ This repository contains source code of bowling score system.
 
 The project uses Spring boot and can be build/deployed with Gradle.
 
+## Warning
+
+There is no functionality to publish library into mavenCentral yet, thus _it could be used only as a local java-library_.
+
+There is no strike/spare logic implemented in internal client.
 
 ## Usage
-
-NB! There is not functionality to publish library into mavenCentral yet, thus _it could be used only as a local java-library_.
 
 1. Clone repository into you favorite IDE.
 2. Run `./gradlew clean build`, after that `.jar` file should be located under root `build/libs` folder.
