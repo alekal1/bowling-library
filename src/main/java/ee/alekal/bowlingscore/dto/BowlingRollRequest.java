@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BowlingRoll {
+public class BowlingRollRequest {
     String playerNickname;
     String score;
-    Integer frameId;
-
 }

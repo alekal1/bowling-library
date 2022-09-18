@@ -1,6 +1,6 @@
 package ee.alekal.bowlingscore.internal.service;
 
-import ee.alekal.bowlingscore.dto.BowlingRoll;
+import ee.alekal.bowlingscore.dto.BowlingRollRequest;
 import ee.alekal.bowlingscore.dto.type.RollQueueType;
 import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
@@ -18,44 +18,44 @@ import static ee.alekal.bowlingscore.internal.utils.InternalUtils.convertStringS
 @Service
 public class InternalBowlingGameService implements BowlingGameService {
 
+    private static final Integer CURRENT_FRAME_ID = GameBehaviour.getInstance().getCurrentFrame();
+
     @Override
-    public ResponseEntity<?> makeFirstRoll(BowlingRoll bowlingRoll) {
+    public ResponseEntity<?> makeFirstRoll(BowlingRollRequest bowlingRoll) {
         log.info("makeFirstRoll, bowlingRoll {}", bowlingRoll);
 
         var nickname = bowlingRoll.getPlayerNickname();
-        var frameId = bowlingRoll.getFrameId();
         var score = bowlingRoll.getScore();
 
         ValidationService
-                .withNickNameAndFrameId(nickname, frameId)
+                .withNickNameAndFrameId(nickname, CURRENT_FRAME_ID)
                 .playerIsRegisteredInInternalStorage()
                 .frameExistsInInternalStorage()
                 .isValidScore(score)
                 .canMakeRoll(RollQueueType.FRAME_FIRST_ROLL);
 
         val player = InternalBowlingStorage.getPlayerByNickname(nickname);
-        player.setFrameFirstRollScore(frameId, convertStringScore(score));
+        player.setFrameFirstRollScore(CURRENT_FRAME_ID, convertStringScore(score));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<?> makeSecondRoll(BowlingRoll bowlingRoll) {
+    public ResponseEntity<?> makeSecondRoll(BowlingRollRequest bowlingRoll) {
         log.info("makeSecondRoll, bowlingRoll {}", bowlingRoll);
 
         var nickname = bowlingRoll.getPlayerNickname();
-        var frameId = bowlingRoll.getFrameId();
         var score = bowlingRoll.getScore();
 
         ValidationService
-                .withNickNameAndFrameId(nickname, frameId)
+                .withNickNameAndFrameId(nickname, CURRENT_FRAME_ID)
                 .playerIsRegisteredInInternalStorage()
                 .frameExistsInInternalStorage()
                 .isValidScore(score)
                 .canMakeRoll(RollQueueType.FRAME_SECOND_ROLL);
 
         val player = InternalBowlingStorage.getPlayerByNickname(nickname);
-        player.setFrameSecondRollScore(frameId, convertStringScore(score));
+        player.setFrameSecondRollScore(CURRENT_FRAME_ID, convertStringScore(score));
 
         GameBehaviour.getInstance().addPlayerToFrameQueue(player);
         GameBehaviour.getInstance().updateCurrentFrameIfAllPlayersRolledOnCurrent();

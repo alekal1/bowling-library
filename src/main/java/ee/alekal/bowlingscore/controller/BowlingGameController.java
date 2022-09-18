@@ -1,6 +1,6 @@
 package ee.alekal.bowlingscore.controller;
 
-import ee.alekal.bowlingscore.dto.BowlingRoll;
+import ee.alekal.bowlingscore.dto.BowlingRollRequest;
 import ee.alekal.bowlingscore.service.BowlingGameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +19,12 @@ public class BowlingGameController {
     private final BowlingGameService bowlingGameService;
 
     @PostMapping("/firstRoll")
-    public ResponseEntity<?> makeFirstRoll(@RequestBody BowlingRoll roll) {
+    public ResponseEntity<?> makeFirstRoll(@RequestBody BowlingRollRequest roll) {
         return bowlingGameService.makeFirstRoll(roll);
     }
 
     @PostMapping("/secondRoll")
-    public ResponseEntity<?> makeSecondRoll(@RequestBody BowlingRoll roll) {
+    public ResponseEntity<?> makeSecondRoll(@RequestBody BowlingRollRequest roll) {
         return bowlingGameService.makeSecondRoll(roll);
     }
 }
