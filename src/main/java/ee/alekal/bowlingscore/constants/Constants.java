@@ -1,6 +1,9 @@
 package ee.alekal.bowlingscore.constants;
 
 public class Constants {
+    // TODO: Should be configurable
+    public static final Integer BOWLING_BOARD_SIZE = 10;
+
     // Controllers
     public static final String BASE_PATH = "/api/v1";
     public static final String BOWLING_MANAGEMENT_PATH = BASE_PATH + "/bowling-management";
@@ -14,8 +17,8 @@ public class Constants {
             = "Frame with id %s already has result in %s roll!";
     public static final String ERR_NOT_VALID_SCORE = "Score value %s is not valid!";
     public static final String ERR_PLAYER_SHOULD_MAKE_FIRST_ROLL = "Player %s should make first roll in frame %s";
-    public static final String ERR_INVALID_CURRENT_FRAME = "Cannot perform roll with id %s, current frame is %s";
+    public static final String ERR_INVALID_TOTAL_SCORE_VALUE
+            = "Total score value per frame could to be greater than %s !";
 
-    // TODO: Should be configurable
-    public static final Integer BOWLING_BOARD_SIZE = 10;
+
 }

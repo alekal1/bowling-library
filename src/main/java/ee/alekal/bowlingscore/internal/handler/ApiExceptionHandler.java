@@ -7,6 +7,7 @@ import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
 import ee.alekal.bowlingscore.exception.player.PlayerAlreadyRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerNotRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerShouldMakeFirstRollException;
+import ee.alekal.bowlingscore.exception.score.InvalidTotalScoreValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,7 +35,9 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(ERR_FRAME_CLASSIFIER, e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidScoreValueException.class)
+    @ExceptionHandler({
+            InvalidScoreValueException.class,
+            InvalidTotalScoreValueException.class})
     public ResponseEntity<ErrorResponse> handleScoreExceptions(InvalidScoreValueException e) {
         return new ResponseEntity<>(new ErrorResponse(ERR_SCORE_CLASSIFIER, e.getMessage()), HttpStatus.BAD_REQUEST);
     }

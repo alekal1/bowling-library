@@ -9,10 +9,13 @@ import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
 import ee.alekal.bowlingscore.exception.player.PlayerAlreadyRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerNotRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerShouldMakeFirstRollException;
+import ee.alekal.bowlingscore.exception.score.InvalidTotalScoreValueException;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import lombok.experimental.UtilityClass;
 
 import java.util.Set;
+
+import static ee.alekal.bowlingscore.constants.Constants.BOWLING_BOARD_SIZE;
 
 @UtilityClass
 public class ValidationService {
@@ -73,10 +76,11 @@ public class ValidationService {
                 throw new InvalidScoreValueException(score);
             }
 
-            checkConstraint(integerScore < 0 || integerScore > 9,
+            checkConstraint(integerScore < 0 || integerScore > 10,
                     new InvalidScoreValueException(score));
 
-            // TODO: Calculate sum of two roll
+            checkConstraint((player.getFrameTotalScore(frameId) + integerScore) > 10,
+                    new InvalidTotalScoreValueException(String.valueOf(BOWLING_BOARD_SIZE)));
 
             return this;
         }

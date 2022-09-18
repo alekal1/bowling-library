@@ -1,12 +1,10 @@
 package ee.alekal.bowlingscore.internal;
 
-import ee.alekal.bowlingscore.dto.api.BowlingRollRequest;
 import ee.alekal.bowlingscore.dto.Player;
+import ee.alekal.bowlingscore.dto.api.BowlingRollRequest;
 import ee.alekal.bowlingscore.exception.BowlingValidationException;
 import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
-import ee.alekal.bowlingscore.internal.service.InternalBowlingGameService;
-import ee.alekal.bowlingscore.internal.service.InternalBowlingManagementService;
 import ee.alekal.bowlingscore.service.BowlingGameService;
 import ee.alekal.bowlingscore.service.BowlingManagementService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -41,10 +39,13 @@ public class InternalBowlingServiceTest {
     @Autowired
     BowlingGameService bowlingGameService;
 
+    @Autowired
+    GameBehaviour gameBehaviour;
+
     @BeforeEach
     public void init() {
         InternalBowlingStorage.removeAllPlayers();
-        GameBehaviour.clearInstance();
+        gameBehaviour.afterPropertiesSet();
     }
 
     @Test
@@ -99,7 +100,7 @@ public class InternalBowlingServiceTest {
         var firstRollResponse =
                 bowlingManagementService.getPlayerFrameScore(
                         player.getNickname(),
-                        GameBehaviour.getInstance().getCurrentFrame());
+                        gameBehaviour.getCurrentFrame());
 
         assertEquals(HttpStatus.OK, firstRollResponse.getStatusCode());
         assertTrue(firstRollResponse.hasBody());
@@ -136,7 +137,7 @@ public class InternalBowlingServiceTest {
 
     @Test
     public void verifyThrowsValidationExceptionFrameRollResultAlreadyReported() {
-        var player = addPlayer("verifyThrowsValidationExceptionFrameRollResultAlreadyReported");;
+        var player = addPlayer("verifyThrowsValidationExceptionFrameRollResultAlreadyReported");
 
         var firstBowlingRoll = BowlingRollRequest.builder()
                 .playerNickname(player.getNickname())
@@ -148,7 +149,7 @@ public class InternalBowlingServiceTest {
         var firstRollResponse =
                 bowlingManagementService.getPlayerFrameScore(
                         player.getNickname(),
-                        GameBehaviour.getInstance().getCurrentFrame());
+                        gameBehaviour.getCurrentFrame());
         assertEquals(HttpStatus.OK, firstRollResponse.getStatusCode());
         assertTrue(firstRollResponse.hasBody());
 
@@ -212,15 +213,14 @@ public class InternalBowlingServiceTest {
 
     @Test
     public void verifyCannotDeleteUnregisteredPlayer() {
-        assertThrowsBowlingValidationException(() -> {
-            bowlingManagementService.removePlayerByNickname("verifyCannotDeleteUnregisteredPlayer");
-        });
+        assertThrowsBowlingValidationException(() ->
+                bowlingManagementService.removePlayerByNickname("verifyCannotDeleteUnregisteredPlayer"));
     }
 
 
     @Test
     public void verifyCurrentFrameIsUpdatedAfterAllPlayersRoll() {
-        assertEquals(0, GameBehaviour.getInstance().getCurrentFrame());
+        assertEquals(0, gameBehaviour.getCurrentFrame());
 
         var bowlingPlayers = List.of(
                 addPlayer("verifyCurrentFrameIsUpdatedAfterAllPlayersRoll-1"),
@@ -242,12 +242,113 @@ public class InternalBowlingServiceTest {
                             .build());
         }
 
-        assertEquals(1, GameBehaviour.getInstance().getCurrentFrame());
+        assertEquals(1, gameBehaviour.getCurrentFrame());
     }
 
     @Test
-    public void verifyThrowsValidationExceptionInvalidCurrentFrame() {
+    public void verifyThrowsValidationExceptionInvalidTotalScore() {
+        var player = addPlayer("verifyThrowsValidationExceptionInvalidTotalScore");
 
+        bowlingGameService.makeFirstRoll(
+                BowlingRollRequest.builder()
+                        .playerNickname(player.getNickname())
+                        .score("7")
+                        .build());
+
+        assertThrowsBowlingValidationException(() ->
+                bowlingGameService.makeFirstRoll(
+                        BowlingRollRequest.builder()
+                                .playerNickname(player.getNickname())
+                                .score("7")
+                                .build()));
+
+    }
+
+    @Test
+    public void verifyCouldRemoveAllPlayers() {
+        addPlayer("verifyCouldRemoveAllPlayers-1");
+        addPlayer("verifyCouldRemoveAllPlayers-2");
+
+        assertEquals(2, InternalBowlingStorage.getPlayers().size());
+
+        var response = bowlingManagementService.removeAllPlayers();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(0, InternalBowlingStorage.getPlayers().size());
+    }
+
+    @Test
+    public void verifyCouldGetAllPlayers() {
+        addPlayer("verifyCouldGetAllPlayers-1");
+        addPlayer("verifyCouldGetAllPlayers-2");
+
+        assertEquals(2, InternalBowlingStorage.getPlayers().size());
+
+        var response = bowlingManagementService.getAllPlayers();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.hasBody());
+
+        @SuppressWarnings("unchecked")
+        var responseBody = (List<Player>) response.getBody();
+        assertEquals(InternalBowlingStorage.getPlayers().size(),
+                responseBody.size());
+    }
+
+    @Test
+    public void verifyCannotMakeSecondRollOnCurrentFrameIfFirstRollScoreIsStrike() {
+        var player = addPlayer("verifyCannotMakeSecondRollOnCurrentFrameIfFirstRollScoreIsStrike");
+
+        bowlingGameService.makeFirstRoll(
+                BowlingRollRequest.builder()
+                        .playerNickname(player.getNickname())
+                        .score("10")
+                        .build());
+
+        assertThrowsBowlingValidationException(() ->
+                bowlingGameService.makeSecondRoll(
+                        BowlingRollRequest.builder()
+                                .playerNickname(player.getNickname())
+                                .score("1")
+                                .build()));
+
+    }
+
+    @Test
+    public void verifyPlayerTotalScoreReturnedCorrectly() {
+        var player = addPlayer("verifyPlayerTotalScoreReturnedCorrectly");
+
+        var request = BowlingRollRequest.builder()
+                .playerNickname(player.getNickname())
+                .score("1")
+                .build();
+
+        for (int i = 0; i < 2; i++) {
+            bowlingGameService.makeFirstRoll(request);
+            bowlingGameService.makeSecondRoll(request);
+        }
+
+        var response = bowlingManagementService.getPlayerTotalScore(player.getNickname());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.hasBody());
+
+        var body = (Integer) response.getBody();
+
+        assertEquals(4, body);
+    }
+
+    @Test
+    public void verifyUpdatesCurrentFrameIfFirstRollOnCurrentFrameWasStrike() {
+        var player = addPlayer("verifyUpdatesCurrentFrameIfFirstRollOnCurrentFrameWasStrike");
+
+        assertEquals(0, gameBehaviour.getCurrentFrame());
+
+        bowlingGameService.makeFirstRoll(
+                BowlingRollRequest.builder()
+                    .playerNickname(player.getNickname())
+                    .score("10")
+                    .build());
+
+        assertEquals(1, gameBehaviour.getCurrentFrame());
     }
 
 
@@ -264,8 +365,7 @@ public class InternalBowlingServiceTest {
         assertThrows(BowlingValidationException.class, executable);
     }
 
-    @Import({InternalBowlingManagementService.class, InternalBowlingGameService.class})
+    @ComponentScan(basePackages = "ee.alekal.bowlingscore.internal")
     static class Config {
-
     }
 }
