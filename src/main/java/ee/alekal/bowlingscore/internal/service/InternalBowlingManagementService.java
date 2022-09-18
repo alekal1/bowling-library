@@ -1,9 +1,11 @@
 package ee.alekal.bowlingscore.internal.service;
 
 import ee.alekal.bowlingscore.dto.Player;
+import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import ee.alekal.bowlingscore.service.BowlingManagementService;
 import ee.alekal.bowlingscore.internal.validation.ValidationService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,10 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class InternalBowlingManagementService implements BowlingManagementService {
+
+    private final GameBehaviour gameBehaviour;
 
     @Override
     public ResponseEntity<Player> addPlayerByNickname(String nickname) {
@@ -78,6 +83,7 @@ public class InternalBowlingManagementService implements BowlingManagementServic
     @Override
     public ResponseEntity<?> removeAllPlayers() {
         InternalBowlingStorage.removeAllPlayers();
+        gameBehaviour.afterPropertiesSet();
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

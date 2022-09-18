@@ -1,6 +1,8 @@
 package ee.alekal.bowlingscore.internal.handler;
 
 import ee.alekal.bowlingscore.dto.api.ErrorResponse;
+import ee.alekal.bowlingscore.exception.BowlingGameIsEndedException;
+import ee.alekal.bowlingscore.exception.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
 import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
@@ -19,26 +21,33 @@ public class ApiExceptionHandler {
     private static final String ERR_PLAYER_CLASSIFIER = "player:err";
     private static final String ERR_FRAME_CLASSIFIER = "frame:err";
     private static final String ERR_SCORE_CLASSIFIER = "score:err";
+    private static final String ERR_GAME_CLASSIFIER = "game:err";
 
     @ExceptionHandler({
             PlayerAlreadyRegisteredException.class,
             PlayerNotRegisteredException.class,
             PlayerShouldMakeFirstRollException.class})
-    public ResponseEntity<ErrorResponse> handlePlayerExceptions(Exception e) {
+    public ResponseEntity<ErrorResponse> handlePlayerExceptions(BowlingValidationException e) {
         return new ResponseEntity<>(new ErrorResponse(ERR_PLAYER_CLASSIFIER, e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({
             FrameDoesNotExistException.class,
             FrameRollResultAlreadyReportedException.class})
-    public ResponseEntity<ErrorResponse> handleFrameExceptions(Exception e) {
+    public ResponseEntity<ErrorResponse> handleFrameExceptions(BowlingValidationException e) {
         return new ResponseEntity<>(new ErrorResponse(ERR_FRAME_CLASSIFIER, e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({
             InvalidScoreValueException.class,
             InvalidTotalScoreValueException.class})
-    public ResponseEntity<ErrorResponse> handleScoreExceptions(InvalidScoreValueException e) {
+    public ResponseEntity<ErrorResponse> handleScoreExceptions(BowlingValidationException e) {
         return new ResponseEntity<>(new ErrorResponse(ERR_SCORE_CLASSIFIER, e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BowlingGameIsEndedException.class)
+    public ResponseEntity<ErrorResponse> handleGameExceptions(BowlingValidationException e) {
+        return new ResponseEntity<>(new ErrorResponse(ERR_GAME_CLASSIFIER, e.getMessage()),
+                HttpStatus.ALREADY_REPORTED);
     }
 }

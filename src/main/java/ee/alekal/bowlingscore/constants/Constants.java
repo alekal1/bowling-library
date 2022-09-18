@@ -17,6 +17,7 @@ public class Constants {
             = "Frame with id %s already has result in %s roll!";
     public static final String ERR_NOT_VALID_SCORE = "Score value %s is not valid!";
     public static final String ERR_PLAYER_SHOULD_MAKE_FIRST_ROLL = "Player %s should make first roll in frame %s";
+    public static final String ERR_GAME_IS_ENDED = "Cannot perform roll on next frame due to game is ended!";
     public static final String ERR_INVALID_TOTAL_SCORE_VALUE
             = "Total score value per frame could to be greater than %s !";
 

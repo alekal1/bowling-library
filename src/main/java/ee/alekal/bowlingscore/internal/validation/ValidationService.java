@@ -2,6 +2,7 @@ package ee.alekal.bowlingscore.internal.validation;
 
 import ee.alekal.bowlingscore.dto.Player;
 import ee.alekal.bowlingscore.dto.type.RollQueueType;
+import ee.alekal.bowlingscore.exception.BowlingGameIsEndedException;
 import ee.alekal.bowlingscore.exception.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
@@ -13,7 +14,6 @@ import ee.alekal.bowlingscore.exception.score.InvalidTotalScoreValueException;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import lombok.experimental.UtilityClass;
 
-import java.util.Set;
 
 import static ee.alekal.bowlingscore.constants.Constants.BOWLING_BOARD_SIZE;
 
@@ -64,6 +64,15 @@ public class ValidationService {
             return this;
         }
 
+        public Validator gameIsNotEnded() {
+            checkConstraint(frameId.equals(player.getFrames().size()),
+                    // Current frame is 10, to display message correctly +1 was added
+                    new BowlingGameIsEndedException(null));
+            return this;
+        }
+
+        // TODO: Add check if current player already moved on current frame
+
         public Validator isValidScore(String score) {
             int integerScore;
             try {
@@ -82,7 +91,6 @@ public class ValidationService {
         }
 
         public Validator canMakeRoll(RollQueueType rollQueueType) {
-
             switch (rollQueueType) {
                 case FRAME_FIRST_ROLL:
                     checkConstraint(

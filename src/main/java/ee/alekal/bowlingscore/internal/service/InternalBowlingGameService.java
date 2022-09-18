@@ -32,6 +32,7 @@ public class InternalBowlingGameService implements BowlingGameService {
                 .withNickNameAndFrameId(nickname, gameBehaviour.getCurrentFrame())
                 .playerIsRegisteredInInternalStorage()
                 .frameExistsInInternalStorage()
+                .gameIsNotEnded()
                 .isValidScore(score)
                 .canMakeRoll(RollQueueType.FRAME_FIRST_ROLL);
 
@@ -56,6 +57,7 @@ public class InternalBowlingGameService implements BowlingGameService {
                 .withNickNameAndFrameId(nickname, gameBehaviour.getCurrentFrame())
                 .playerIsRegisteredInInternalStorage()
                 .frameExistsInInternalStorage()
+                .gameIsNotEnded()
                 .isValidScore(score)
                 .canMakeRoll(RollQueueType.FRAME_SECOND_ROLL);
 

@@ -351,6 +351,21 @@ public class InternalBowlingServiceTest {
         assertEquals(1, gameBehaviour.getCurrentFrame());
     }
 
+    @Test
+    public void verifyThrowsValidationExceptionGameIsEnded() {
+        var player = addPlayer("verifyThrowsValidationExceptionGameIsEnded");
+        var request = BowlingRollRequest.builder()
+                .playerNickname(player.getNickname())
+                .score("10")
+                .build();
+
+        for (int i = 0; i < BOWLING_BOARD_SIZE; i++) {
+            bowlingGameService.makeFirstRoll(request);
+        }
+
+        assertThrowsBowlingValidationException(() -> bowlingGameService.makeFirstRoll(request));
+    }
+
 
     private Player addPlayer(Object nickNamePrefix) {
         var response = bowlingManagementService.addPlayerByNickname(
