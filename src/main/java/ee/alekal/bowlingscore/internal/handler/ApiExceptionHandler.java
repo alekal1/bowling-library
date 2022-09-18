@@ -1,8 +1,8 @@
 package ee.alekal.bowlingscore.internal.handler;
 
 import ee.alekal.bowlingscore.dto.api.ErrorResponse;
-import ee.alekal.bowlingscore.exception.BowlingGameIsEndedException;
-import ee.alekal.bowlingscore.exception.BowlingValidationException;
+import ee.alekal.bowlingscore.exception.game.BowlingGameIsEndedException;
+import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
 import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;

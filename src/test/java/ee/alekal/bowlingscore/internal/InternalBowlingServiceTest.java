@@ -2,7 +2,7 @@ package ee.alekal.bowlingscore.internal;
 
 import ee.alekal.bowlingscore.dto.Player;
 import ee.alekal.bowlingscore.dto.api.BowlingRollRequest;
-import ee.alekal.bowlingscore.exception.BowlingValidationException;
+import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import ee.alekal.bowlingscore.service.BowlingGameService;

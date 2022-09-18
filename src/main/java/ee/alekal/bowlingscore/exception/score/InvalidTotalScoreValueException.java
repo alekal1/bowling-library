@@ -1,6 +1,6 @@
 package ee.alekal.bowlingscore.exception.score;
 
-import ee.alekal.bowlingscore.exception.BowlingValidationException;
+import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 
 import static ee.alekal.bowlingscore.constants.Constants.ERR_INVALID_TOTAL_SCORE_VALUE;
 

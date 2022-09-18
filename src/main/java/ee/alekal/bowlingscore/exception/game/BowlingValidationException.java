@@ -1,4 +1,4 @@
-package ee.alekal.bowlingscore.exception;
+package ee.alekal.bowlingscore.exception.game;
 
 public class BowlingValidationException extends IllegalArgumentException {
 

@@ -2,8 +2,8 @@ package ee.alekal.bowlingscore.internal.validation;
 
 import ee.alekal.bowlingscore.dto.Player;
 import ee.alekal.bowlingscore.dto.type.RollQueueType;
-import ee.alekal.bowlingscore.exception.BowlingGameIsEndedException;
-import ee.alekal.bowlingscore.exception.BowlingValidationException;
+import ee.alekal.bowlingscore.exception.game.BowlingGameIsEndedException;
+import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
 import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
@@ -70,8 +70,6 @@ public class ValidationService {
                     new BowlingGameIsEndedException(null));
             return this;
         }
-
-        // TODO: Add check if current player already moved on current frame
 
         public Validator isValidScore(String score) {
             int integerScore;

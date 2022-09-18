@@ -82,6 +82,8 @@ public class InternalBowlingManagementService implements BowlingManagementServic
 
     @Override
     public ResponseEntity<?> removeAllPlayers() {
+        log.info("removeAllPlayers");
+
         InternalBowlingStorage.removeAllPlayers();
         gameBehaviour.afterPropertiesSet();
 

@@ -1,6 +1,6 @@
 package ee.alekal.bowlingscore.exception.frame;
 
-import ee.alekal.bowlingscore.exception.BowlingValidationException;
+import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 
 import static ee.alekal.bowlingscore.constants.Constants.ERR_FRAME_DOES_NOT_EXISTS;
 

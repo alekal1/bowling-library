@@ -1,4 +1,4 @@
-package ee.alekal.bowlingscore.exception;
+package ee.alekal.bowlingscore.exception.game;
 
 
 import static ee.alekal.bowlingscore.constants.Constants.ERR_GAME_IS_ENDED;

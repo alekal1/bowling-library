@@ -5,10 +5,8 @@ buildscript {
 plugins {
 	id 'org.springframework.boot' version '2.7.3' apply false
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
-
     id 'java-library'
     id 'maven-publish'
-
     id 'org.barfuin.gradle.jacocolog' version '1.0.1'
 }
 
@@ -19,7 +17,7 @@ dependencyManagement {
 }
 
 group = 'ee.alekal'
-version = '2.1.6'
+version = '2.1.7'
 sourceCompatibility = '11'
 
 configurations {
@@ -36,7 +34,6 @@ dependencies {
 	implementation          deps.spring
 	compileOnly             deps.lombok
 	annotationProcessor     deps.lombok
-
     testImplementation      deps.spring_test
 }
 
