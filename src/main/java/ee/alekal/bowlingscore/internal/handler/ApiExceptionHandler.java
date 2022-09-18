@@ -1,13 +1,12 @@
-package ee.alekal.bowlingscore.internal.api;
+package ee.alekal.bowlingscore.internal.handler;
 
+import ee.alekal.bowlingscore.dto.api.ErrorResponse;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
-import ee.alekal.bowlingscore.exception.frame.InvalidCurrentFrameException;
 import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
 import ee.alekal.bowlingscore.exception.player.PlayerAlreadyRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerNotRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerShouldMakeFirstRollException;
-import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,8 +29,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler({
             FrameDoesNotExistException.class,
-            FrameRollResultAlreadyReportedException.class,
-            InvalidCurrentFrameException.class})
+            FrameRollResultAlreadyReportedException.class})
     public ResponseEntity<ErrorResponse> handleFrameExceptions(Exception e) {
         return new ResponseEntity<>(new ErrorResponse(ERR_FRAME_CLASSIFIER, e.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -39,16 +37,5 @@ public class ApiExceptionHandler {
     @ExceptionHandler(InvalidScoreValueException.class)
     public ResponseEntity<ErrorResponse> handleScoreExceptions(InvalidScoreValueException e) {
         return new ResponseEntity<>(new ErrorResponse(ERR_SCORE_CLASSIFIER, e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @Data
-    private static class ErrorResponse {
-        String classifier;
-        String message;
-
-        private ErrorResponse(String classifier, String message) {
-            this.classifier = classifier;
-            this.message = message;
-        }
     }
 }

@@ -7,6 +7,7 @@ public class Frame {
     private Integer firstRollScore;
     private Integer secondRollScore;
 
+    // TODO: Strike and spare handling
     public Integer getFrameTotalScore() {
         if (firstRollScore == null && secondRollScore == null) {
             return 0;

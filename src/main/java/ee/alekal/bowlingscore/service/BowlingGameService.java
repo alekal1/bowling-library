@@ -1,6 +1,6 @@
 package ee.alekal.bowlingscore.service;
 
-import ee.alekal.bowlingscore.dto.BowlingRollRequest;
+import ee.alekal.bowlingscore.dto.api.BowlingRollRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface BowlingGameService {

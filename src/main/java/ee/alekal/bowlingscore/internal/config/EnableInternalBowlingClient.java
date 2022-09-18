@@ -2,7 +2,7 @@ package ee.alekal.bowlingscore.internal.config;
 
 import ee.alekal.bowlingscore.controller.BowlingGameController;
 import ee.alekal.bowlingscore.controller.BowlingManagementController;
-import ee.alekal.bowlingscore.internal.api.ApiExceptionHandler;
+import ee.alekal.bowlingscore.internal.handler.ApiExceptionHandler;
 import ee.alekal.bowlingscore.internal.service.InternalBowlingGameService;
 import ee.alekal.bowlingscore.internal.service.InternalBowlingManagementService;
 import org.springframework.context.annotation.Import;

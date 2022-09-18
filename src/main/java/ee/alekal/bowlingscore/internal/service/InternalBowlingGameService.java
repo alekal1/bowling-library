@@ -1,6 +1,6 @@
 package ee.alekal.bowlingscore.internal.service;
 
-import ee.alekal.bowlingscore.dto.BowlingRollRequest;
+import ee.alekal.bowlingscore.dto.api.BowlingRollRequest;
 import ee.alekal.bowlingscore.dto.type.RollQueueType;
 import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;

@@ -5,12 +5,10 @@ import ee.alekal.bowlingscore.dto.type.RollQueueType;
 import ee.alekal.bowlingscore.exception.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
-import ee.alekal.bowlingscore.exception.frame.InvalidCurrentFrameException;
 import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
 import ee.alekal.bowlingscore.exception.player.PlayerAlreadyRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerNotRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerShouldMakeFirstRollException;
-import ee.alekal.bowlingscore.internal.blogic.GameBehaviour;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import lombok.experimental.UtilityClass;
 
@@ -84,9 +82,6 @@ public class ValidationService {
         }
 
         public Validator canMakeRoll(RollQueueType rollQueueType) {
-            checkConstraint(
-                    !frameId.equals(GameBehaviour.getInstance().getCurrentFrame()),
-                    new InvalidCurrentFrameException(frameId));
 
             switch (rollQueueType) {
                 case FRAME_FIRST_ROLL:

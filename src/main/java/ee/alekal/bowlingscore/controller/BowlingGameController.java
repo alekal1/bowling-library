@@ -1,6 +1,6 @@
 package ee.alekal.bowlingscore.controller;
 
-import ee.alekal.bowlingscore.dto.BowlingRollRequest;
+import ee.alekal.bowlingscore.dto.api.BowlingRollRequest;
 import ee.alekal.bowlingscore.service.BowlingGameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

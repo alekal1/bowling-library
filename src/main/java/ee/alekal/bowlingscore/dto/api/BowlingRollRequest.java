@@ -1,4 +1,4 @@
-package ee.alekal.bowlingscore.dto;
+package ee.alekal.bowlingscore.dto.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
