@@ -1,14 +1,14 @@
 package ee.alekal.bowlingscore.internal.handler;
 
 import ee.alekal.bowlingscore.dto.api.ErrorResponse;
-import ee.alekal.bowlingscore.exception.game.BowlingGameIsEndedException;
-import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
-import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
+import ee.alekal.bowlingscore.exception.game.BowlingGameIsEndedException;
+import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.player.PlayerAlreadyRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerNotRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerShouldMakeFirstRollException;
+import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
 import ee.alekal.bowlingscore.exception.score.InvalidTotalScoreValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

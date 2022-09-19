@@ -1,7 +1,7 @@
 package ee.alekal.bowlingscore.constants;
 
 public class Constants {
-    // TODO: Should be configurable
+    // TODO: Could be configurable?
     public static final Integer BOWLING_BOARD_SIZE = 10;
 
     // Controllers

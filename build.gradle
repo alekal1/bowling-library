@@ -5,20 +5,20 @@ buildscript {
 plugins {
 	id 'org.springframework.boot' version '2.7.3' apply false
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id 'org.barfuin.gradle.jacocolog' version '1.0.1'
     id 'java-library'
     id 'maven-publish'
-    id 'org.barfuin.gradle.jacocolog' version '1.0.1'
 }
+
+group = 'ee.alekal'
+version = '2.1.8'
+sourceCompatibility = '11'
 
 dependencyManagement {
     imports {
         mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
     }
 }
-
-group = 'ee.alekal'
-version = '2.1.7'
-sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -51,6 +51,14 @@ test {
     outputs.upToDateWhen {false}
     testLogging {
         events "PASSED", "SKIPPED", "FAILED"
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                println "Results: ${result.testCount} tests, " +
+                        "${result.successfulTestCount} successes, " +
+                        "${result.failedTestCount} failures, " +
+                        "${result.skippedTestCount} skipped "
+            }
+        }
     }
 }
 

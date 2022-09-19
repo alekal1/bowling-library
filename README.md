@@ -2,7 +2,7 @@
 
 ### Short overview
 
-This repository contains source code of bowling score system.
+This repository contains source code of bowling score system plugin.
 
 The project uses Spring boot and can be build/deployed with Gradle.
 
@@ -12,6 +12,8 @@ Project uses `jococo` plugin for displaying test coverage
 Publishing to mavenCentral is not added yet, thus _it could be used only as a local java-library_.
 
 There is no strike/spare logic implemented in an internal client.
+
+There is no database connectivity in internal implementation yet..
 
 ## Usage
 
@@ -33,12 +35,42 @@ Since this library is using Spring boot as REST API client, make sure to add spr
 **[Option 1]** In your project add `@EnableInternalBowlingClient` under your configuration.
 This will use implementation from `src/main/java/ee/alekal/bowlingscore/internal` package.
 
-Internal implementation is quite straightforward, but it is recommended to check how things work (for instance validation, api exception handling etc)
+For instance:
+```
+@EnableInternalBowlingClient
+public class Configuration {
+    ....
+    ....
+}
+```
 
-Furthermore, _there is no database connectivity_ in internal implementation yet.
+Internal implementation is quite straightforward, but it is recommended to check how things work 
+(for instance validation, api exception handling etc)
 
 **[Option 2]** In your project add `@EnableBowlingControllers` under your configuration.
  You should create your own logic by implementing `BowlingManagementService` and `BowlingGameService` classes.
+
+For instance:
+```
+@EnableBowlingControllers
+public class Configuration {
+    ....
+    ....
+}
+
+public class MyManagementService implements BowlingManagementService {
+    @Override
+    ....
+    ....
+}
+
+public class MyManagementService implements BowlingGameService {
+    @Override
+    ....
+    ....
+}
+```
+
 
 ### API docs
 Internal api documentation is located under `spec/` folder

@@ -6,5 +6,6 @@ import org.springframework.http.ResponseEntity;
 public interface BowlingGameService {
 
     ResponseEntity<?> makeFirstRoll(BowlingRollRequest roll);
+
     ResponseEntity<?> makeSecondRoll(BowlingRollRequest roll);
 }

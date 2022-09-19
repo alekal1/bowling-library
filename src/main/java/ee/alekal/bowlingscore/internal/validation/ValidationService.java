@@ -2,18 +2,17 @@ package ee.alekal.bowlingscore.internal.validation;
 
 import ee.alekal.bowlingscore.dto.Player;
 import ee.alekal.bowlingscore.dto.type.RollQueueType;
-import ee.alekal.bowlingscore.exception.game.BowlingGameIsEndedException;
-import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.frame.FrameDoesNotExistException;
 import ee.alekal.bowlingscore.exception.frame.FrameRollResultAlreadyReportedException;
-import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
+import ee.alekal.bowlingscore.exception.game.BowlingGameIsEndedException;
+import ee.alekal.bowlingscore.exception.game.BowlingValidationException;
 import ee.alekal.bowlingscore.exception.player.PlayerAlreadyRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerNotRegisteredException;
 import ee.alekal.bowlingscore.exception.player.PlayerShouldMakeFirstRollException;
+import ee.alekal.bowlingscore.exception.score.InvalidScoreValueException;
 import ee.alekal.bowlingscore.exception.score.InvalidTotalScoreValueException;
 import ee.alekal.bowlingscore.internal.db.InternalBowlingStorage;
 import lombok.experimental.UtilityClass;
-
 
 import static ee.alekal.bowlingscore.constants.Constants.BOWLING_BOARD_SIZE;
 

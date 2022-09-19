@@ -10,7 +10,6 @@ import static ee.alekal.bowlingscore.constants.Constants.BOWLING_BOARD_SIZE;
 @Getter
 public class Player {
 
-
     private final String nickname;
     private final List<Frame> frames = new ArrayList<>();
 
@@ -20,7 +19,7 @@ public class Player {
     }
 
     private void initFrames() {
-        for (int i = 0; i < BOWLING_BOARD_SIZE; i ++) {
+        for (int i = 0; i < BOWLING_BOARD_SIZE; i++) {
             this.frames.add(new Frame());
         }
     }
